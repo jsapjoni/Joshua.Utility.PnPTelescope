@@ -14,8 +14,5 @@ function SelectFZFPNPList {
     SelectFZFPNPSite -SiteURL $SiteURL
   }
 
-  $list = Get-PnPList | ForEach-Object {
-    $_.Title
-  } | Invoke-Fzf
-  return $list
+  Get-PnPList | ForEach-Object {$_.Title} | fzf --height=80% --layout=reverse --info=inline --border --margin=1 --padding=1 --multi
 }

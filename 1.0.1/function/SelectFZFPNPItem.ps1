@@ -12,8 +12,7 @@ function SelectFZFPNPItem {
   catch {
     throw "You are not connected to a site" 
   }
-  $Item = Get-PnPListItem -List $List -PageSize 1000 | ForEach-Object {
+  Get-PnPListItem -List $List -PageSize 1000 | ForEach-Object {
     $_.FieldValues["FileRef"]
-  } | Invoke-Fzf
-  return $Item
+  } | fzf --height=80% --layout=reverse --info=inline --border --margin=1 --padding=1 --multi
 }
