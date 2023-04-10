@@ -3,31 +3,18 @@ function SelectFZFPNPTelescope {
     [Parameter()]
     [string]
     $SiteURL
-    ,
-    [Parameter()]
-    [switch]
-    $SelectAvailableSite
   )
   
+  #Pre-Initializer - Check connection
+  $SiteURL = CheckConnection -ConnectURL $SiteURL
+  $PickedList = SelectFZFPNPList -SiteURL $SiteURL
+  
   #Initializer - var declare
-  $RandString = (Get-Random -Count 8 -Minimum 65 -Maximum 90 | ForEach-Object {[char]$_}) -join ""
-  $TimeString = "{0:dd}{0:MM}{0:yyyy}-{0:hh}{0:mm}" -f (Get-Date)
-  $TempFolder = "$env:TMP\$TimeString-$RandString"
-
-  [void] (New-Item $TempFolder -ItemType Directory)
-  
-  if ($PSBoundParameters["SelectAvailableSite"] -eq $true) {
-    $List = (SelectFZFPNPList -SiteURL $SiteURL -SelectAvailableSite)
-  }
-  
-  if ($PSBoundParameters["SelectAvailableSite"] -eq $false) {
-    $List = (SelectFZFPNPList -SiteURL $SiteURL)
-  }
-  
-  $FieldValues = (Get-PnPList -Identity $List | Get-PnPListItem).FieldValues 
-  $ItemCount = ($FieldValues | Measure-Object).Count
   $Counter = 0
-  
+  $TempFolder = RandTempFolder -GenerateTempFolder
+  $SetCurrentWorkdir = $PWD
+  $FieldValues = (Get-PnPList -Identity $PickedList | Get-PnPListItem -PageSize 500).FieldValues
+  $ItemCount = ($FieldValues | Measure-Object).Count
   $FieldValues | ForEach-Object { 
     [void] (New-Item -Path "$TempFolder\$($_["FileLeafRef"])___.json" -Force)
     $_ | ConvertTo-Json >> "$TempFolder\$($_["FileLeafRef"])___.json" 

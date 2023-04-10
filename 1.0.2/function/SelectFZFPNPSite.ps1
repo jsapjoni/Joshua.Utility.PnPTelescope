@@ -7,27 +7,25 @@ function SelectFZFPNPSite {
   
   #$SiteURLAdmin = SPOAdminURLConverter -SPOURL $SiteURL
   
+  Write-Host "Starting site picker service"
+  
   try 
   {
     Connect-PnPOnline $SiteURL -Interactive
   }
   catch
   {
-    Write-Host "Could not connect to PNP.Site"
-    throw "Aborting script..."
+    Write-Host "Could not connect to sites from SharePoint tenant"
+    throw "Aborting site picker service"
   }
   
   #Initializer - var declare
-  $RandString = (Get-Random -Count 8 -Minimum 65 -Maximum 90 | ForEach-Object {[char]$_}) -join ""
-  $TimeString = "{0:dd}{0:MM}{0:yyyy}-{0:hh}{0:mm}" -f (Get-Date)
-  $TempFolder = "$env:TMP\$TimeString-$RandString"
+  $TempFolder = RandTempFolder -GenerateTempFolder
   $SetCurrentWorkdir = $PWD
-  
-  #Initializer - setup
-  [void] (New-Item $TempFolder -ItemType Directory)
   $hashtable = [hashtable]@{}
   
-  PNPSites | ForEach-Object {
+  #Initializer - setup
+  GetPNPSites | ForEach-Object {
     $url = "$($_.url.split("/")[-2])-$($_.Url.Split("/")[-1])"
     $itemmurl = "$TempFolder\$($url)___.json"
     [void] (New-Item -Path $itemmurl -Force) 
@@ -49,5 +47,6 @@ function SelectFZFPNPSite {
   $Site = (Get-Content -Path $Site | ConvertFrom-Json).Url
   Set-Location $SetCurrentWorkdir
   Remove-Item $TempFolder -Recurse -Force
+  
   return $Site
 }

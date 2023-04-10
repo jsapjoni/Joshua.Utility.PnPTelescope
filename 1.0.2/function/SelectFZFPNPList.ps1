@@ -3,40 +3,19 @@ function SelectFZFPNPList {
     [Parameter(Mandatory, Position = 1)]
     [string]
     $SiteURL
-    ,
-    [Parameter()]
-    [switch]
-    $SelectAvailableSite
   )
   
-  if ($PSBoundParameters["SelectAvailableSite"] -eq $true) {
-    $Url = SelectFZFPNPSite -SiteURL $SiteURL
-    try 
-    {
-      Connect-PnPOnline -Url $url -Interactive
-      Write-Host "Connected to site: " -NoNewline
-      Write-Host "$url" -ForegroundColor Green
-    }
-    catch 
-    {
-      Write-Host "Could not connect to site: " -NoNewline
-      Write-Host "$url" -ForegroundColor Red
-    }
+  Write-Host "Starting the list picker service" 
+  
+  #Pre-Initializer - Check connection
+  $Url = CheckConnection -ConnectURL $SiteURL
 
-  }
-  
   #Initializer - var declare
-  $Lists = Get-PnPList
-  $RandString = (Get-Random -Count 8 -Minimum 65 -Maximum 90 | ForEach-Object {[char]$_}) -join ""
-  $TimeString = "{0:dd}{0:MM}{0:yyyy}-{0:hh}{0:mm}" -f (Get-Date)
-  $TempFolder = "$env:TMP\$TimeString-$RandString"
+  $TempFolder = RandTempFolder -GenerateTempFolder
   $SetCurrentWorkdir = $PWD
-  
-  #Initializer - setup
-  [void] (New-Item $TempFolder -ItemType Directory)
   $hashtable = [hashtable]@{}
 
-  $Lists | ForEach-Object {
+  Get-PnPList | ForEach-Object {
     $ItemUrl = "$TempFolder\$($_.Title)___.json"
     [void] (New-Item -Path $ItemUrl -Force)
     $hashtable.Add("Title", $_.Title)
@@ -51,6 +30,8 @@ function SelectFZFPNPList {
   Set-Location $SetCurrentWorkdir
   Remove-Item $TempFolder -Recurse -Force
   Write-Host "Selected list: " -NoNewline
-  Write-Host "$PickedList" -ForegroundColor Green
+  Write-Host "$PickedList " -ForegroundColor Green -NoNewline
+  Write-Host "from site: " -NoNewline
+  Write-Host "$Url" -ForegroundColor Green
   return $PickedList
 }
