@@ -13,7 +13,8 @@ function SelectFZFPNPTelescope {
   $Counter = 0
   $TempFolder = RandTempFolder -GenerateTempFolder
   $SetCurrentWorkdir = $PWD
-  $FieldValues = (Get-PnPList -Identity $PickedList | Get-PnPListItem -PageSize 500).FieldValues
+  
+  $FieldValues = (Get-PnPList -Identity $PickedList | Get-PnPListItem -PageSize 1000).FieldValues
   $ItemCount = ($FieldValues | Measure-Object).Count
   $FieldValues | ForEach-Object { 
     [void] (New-Item -Path "$TempFolder\$($_["FileLeafRef"])___.json" -Force)
