@@ -27,15 +27,6 @@ function Invoke-ObjectTelescope {
   foreach ($item in $Object) {
     $itemURL = "$TempFolder\$($Properties | ForEach-Object {$item.$_})___.json"
     [void] (New-Item -Path $itemURL -Force)
-    try 
-    {
-      $item = (@{$property = $Object.$($property)}) | ConvertTo-Json -WarningAction SilentlyContinue
-    }
-    catch 
-    {
-      $item = (@{$property = "Error could not get property"}) | ConvertTo-Json -WarningAction SilentlyContinue
-    }
-    $item >> $ItemURL
   }
   
   $FZFPickerServiceArgs = @{
