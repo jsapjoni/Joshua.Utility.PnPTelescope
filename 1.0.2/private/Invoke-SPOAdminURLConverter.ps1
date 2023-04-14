@@ -1,6 +1,6 @@
 function Invoke-SPOAdminURLConverter {
   param(
-    [Parameter(Mandatory, Position = 1)]
+    [Parameter(ValueFromPipeline, Mandatory)]
     [string]
     $SPOURL
   )

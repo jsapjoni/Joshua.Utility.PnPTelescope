@@ -13,7 +13,7 @@ function Invoke-PNPCheckSiteConnection {
   
   catch 
   {
-    $SiteURL = SelectFZFPNPSite -SiteURL $SiteURL
+    $SiteURL = Invoke-SelectFZFPNPSite -SiteURL $SiteURL
     Connect-PnPOnline -Url $SiteUrl -Interactive
   }
   return $SiteUrl

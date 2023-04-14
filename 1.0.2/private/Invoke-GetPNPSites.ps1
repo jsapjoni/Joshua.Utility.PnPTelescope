@@ -11,6 +11,8 @@ function Invoke-GetPNPSites {
   
   try 
   {
+    $AdminURL = (Get-PnPContext).Url | Invoke-SPOAdminURLConverter
+    Connect-SPOService -Url $AdminURL -ModernAuth $true
     $Sites = Get-SPOSite -Limit ALL -IncludePersonalSite $true
   }
   catch 

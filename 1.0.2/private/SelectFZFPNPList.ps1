@@ -8,30 +8,33 @@ function SelectFZFPNPList {
   Write-Host "Starting the list picker service" 
   
   #Pre-Initializer - Check connection
-  $Url = CheckConnection -ConnectURL $SiteURL
+  Invoke-PNPCheckSiteConnection -SiteURL $SiteURL
 
   #Initializer - var declare
+  $List = Get-PnPList
+  $ListProperties = ($List[0] | Get-Member -MemberType Properties).Name
+  $PNPListToPick = $List.Title
   $TempFolder = Invoke-RandTempFolderGeneration -GenerateTempFolder
   $SetCurrentWorkdir = $PWD
   $hashtable = [hashtable]@{}
 
-  Get-PnPList | ForEach-Object {
+  $List | ForEach-Object {
+    # Standard filename
     $ItemUrl = "$TempFolder\$($_.Title)___.json"
     [void] (New-Item -Path $ItemUrl -Force)
-    $hashtable.Add("Title", $_.Title)
-    $hashtable.Add("Path", $_.Path)
+    foreach ($Property in $ListProperties) {
+      $hashtable.Add($Property, $_.$Property)
+    }
     $hashtable | ConvertTo-Json >> $ItemUrl
     $hashtable.Clear()
   }
   
-  Set-Location $TempFolder
-  $PickedList = fzf --height=80% --layout=reverse --info=inline --border --margin=1 --padding=1 --preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window 70% 
-  $PickedList = (Get-Content -Path $PickedList | ConvertFrom-Json).Title
-  Set-Location $SetCurrentWorkdir
-  Remove-Item $TempFolder -Recurse -Force
-  Write-Host "Selected list: " -NoNewline
-  Write-Host "$PickedList " -ForegroundColor Green -NoNewline
-  Write-Host "from site: " -NoNewline
-  Write-Host "$Url" -ForegroundColor Green
-  return $PickedList
+  $FZFPickerServiceArgs = @{
+    "TempFolder" = $TempFolder
+    "WorkFolder" = $SetCurrentWorkdir
+    "HeaderText" = "Please select list"
+    "ListToPick" = $PNPListToPick
+  } ; $PickedItem = Invoke-FZFPickerService @FZFPickerServiceArgs
+
+  return $PickedItem
 }
