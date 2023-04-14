@@ -11,7 +11,7 @@ function SelectFZFPNPTelescope {
   
   #Initializer - var declare
   $Counter = 0
-  $TempFolder = RandTempFolder -GenerateTempFolder
+  $TempFolder = Invoke-RandTempFolderGeneration -GenerateTempFolder
   $SetCurrentWorkdir = $PWD
   
   $FieldValues = (Get-PnPList -Identity $PickedList | Get-PnPListItem -PageSize 1000).FieldValues

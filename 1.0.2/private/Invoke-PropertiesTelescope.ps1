@@ -5,7 +5,7 @@ function Invoke-PropertiesTelescope {
     $Object
   )
   $Properties = ($Object | Get-Member -MemberType Properties).Name
-  $Tempfolder = RandTempFolder -GenerateTempFolder
+  $Tempfolder = Invoke-RandTempFolderGeneration -GenerateTempFolder
   $SetCurrentWorkdir = $PWD
 
   foreach ($property in $Properties) {

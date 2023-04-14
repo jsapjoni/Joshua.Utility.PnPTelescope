@@ -20,7 +20,7 @@ function SelectFZFPNPSite {
   }
   
   #Initializer - var declare
-  $TempFolder = RandTempFolder -GenerateTempFolder
+  $TempFolder = Invoke-RandTempFolderGeneration -GenerateTempFolder
   $SetCurrentWorkdir = $PWD
   $hashtable = [hashtable]@{}
   

@@ -1,4 +1,4 @@
-function RandTempFolder {
+function Invoke-RandTempFolderGeneration {
   param (
     [parameter()]
     [switch]

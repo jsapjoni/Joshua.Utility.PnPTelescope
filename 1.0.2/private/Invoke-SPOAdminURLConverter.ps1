@@ -1,4 +1,4 @@
-function SPOAdminURLConverter {
+function Invoke-SPOAdminURLConverter {
   param(
     [Parameter(Mandatory, Position = 1)]
     [string]

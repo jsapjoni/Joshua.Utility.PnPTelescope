@@ -22,7 +22,7 @@ function Invoke-ObjectTelescope {
     }
   } 
   
-  $TempFolder = RandTempFolder -GenerateTempFolder
+  $TempFolder = Invoke-RandTempFolderGeneration -GenerateTempFolder
   $SetCurrentWorkdir = $PWD
   
   foreach ($item in $Object) {
