@@ -14,6 +14,7 @@ function Invoke-ObjectTelescope {
   )
   
   $Properties = ($Object | Get-Member -MemberType Properties).Name
+  
   if (!($PSBoundParameters["InteractiveProperties"] -is [System.Object])) {
     $Properties = $Object | Invoke-PropertiesTelescope
     if ($Properties.Count -ge 4){
