@@ -1,34 +1,28 @@
 function SelectFZFPNPSite {
   param (
-    [Parameter(Mandatory, Position = 1)]
+    [Parameter(Mandatory)]
     [string]
     $SiteURL
   )
   
-  #$SiteURLAdmin = SPOAdminURLConverter -SPOURL $SiteURL
-  
-  Write-Host "Starting site picker service"
-  
-  try 
-  {
-    Connect-PnPOnline $SiteURL -Interactive
-  }
-  catch
-  {
-    Write-Host "Could not connect to sites from SharePoint tenant"
-    throw "Aborting site picker service"
-  }
+  Connect-PnPOnline -Url $SiteURL -Interactive
   
   #Initializer - var declare
+  $Sites = Invoke-GetPNPSites
+  $SitesList = [System.Collections.ArrayList]::new()
+
+
   $TempFolder = Invoke-RandTempFolderGeneration -GenerateTempFolder
   $SetCurrentWorkdir = $PWD
   $hashtable = [hashtable]@{}
   
   #Initializer - setup
-  GetPNPSites | ForEach-Object {
+  $Sites | ForEach-Object {
     $url = "$($_.url.split("/")[-2])-$($_.Url.Split("/")[-1])"
     $itemmurl = "$TempFolder\$($url)___.json"
     [void] (New-Item -Path $itemmurl -Force) 
+    [void] $SitesList.Add("$url")
+    
     $hashtable.Add("Url", $_.url) 
     $hashtable.Add("IDs", @{"GroupID" = $_.GroupID ; "HubSiteId" = $_.HubSiteID})
     $hashtable.Add("Title", $_.Title)
@@ -42,11 +36,18 @@ function SelectFZFPNPSite {
     $hashtable.Clear()
   }
   
-  Set-Location $TempFolder
-  $Site = fzf --height=80% --layout=reverse --info=inline --border --margin=1 --padding=1 --preview 'bat --color=always --style=numbers --line-range=:500 {}' --preview-window 70% 
-  $Site = (Get-Content -Path $Site | ConvertFrom-Json).Url
-  Set-Location $SetCurrentWorkdir
-  Remove-Item $TempFolder -Recurse -Force
+#  Set-Location $TempFolder
+#  $Site = $SitesList | fzf --height=80% --layout=reverse --info=inline --border --margin=1 --padding=1 --preview 'bat --color=always --style=numbers --line-range=:500 {}___.json' --preview-window 70% 
+#  $Site = (Get-Content -Path "$($Site)___.json" | ConvertFrom-Json).Url
+#  Set-Location $SetCurrentWorkdir
+#  Remove-Item $TempFolder -Recurse -Force
   
+  $InvokeFZFPickerServiceArgs = @{
+    "TempFolder" = $TempFolder
+    "WorkFolder" = $SetCurrentWorkdir
+    "HeaderText" = "Select object you want to take action"
+    "ListToPick" = $SitesList
+  } ; $site = Invoke-FZFPickerService @InvokeFZFPickerServiceArgs
+
   return $Site
 }

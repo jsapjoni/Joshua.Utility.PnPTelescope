@@ -29,6 +29,8 @@ function Invoke-FZFPickerService {
     "--preview-window", "70%",
     "--multi"
   )
+  $ReturnList = Get-Content -Path "$($ReturnList)___.json" | ConvertFrom-Json
   Set-Location $WorkFolder
+  Remove-Item $TempFolder -Recurse -Force
   return $ReturnList
 }
