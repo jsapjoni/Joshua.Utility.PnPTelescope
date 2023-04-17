@@ -13,10 +13,14 @@ function Invoke-ObjectTelescope {
   
   $TempFolder = Invoke-RandTempFolderGeneration -GenerateTempFolder
   $SetCurrentWorkdir = $PWD
+  $Hashtable = [hashtable]@{}
   
   foreach ($item in $Object) {
     $itemURL = "$TempFolder\$($Properties | ForEach-Object {$item.$_})___.json"
     [void] (New-Item -Path $itemURL -Force)
+    foreach ($Property in $Properties) {
+      $Hashtable.Add()
+    }
   }
   
   $FZFPickerServiceArgs = @{
