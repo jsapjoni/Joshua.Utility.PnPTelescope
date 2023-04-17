@@ -15,7 +15,16 @@ function Invoke-FZFPickerService {
     [Parameter(Mandatory)]
     [string[]]
     $ListToPick
+    ,
+    [Parameter()]
+    [switch]
+    $Multi
   )
+  
+  if ($PSBoundParameters["Multi"] -eq $true) {
+    $MultiArgs = "--multi"
+  }
+  
   Set-Location $TempFolder
   $ReturnList = $ListToPick | & "fzf" @(
     "--header", $HeaderText,
@@ -27,10 +36,11 @@ function Invoke-FZFPickerService {
     "--padding", 1,
     "--preview", "bat --color=always --style=numbers --line-range=:500 {}___.json"
     "--preview-window", "70%",
-    "--multi"
+    $MultiArgs
   )
-  $ReturnList = Get-Content -Path "$($ReturnList)___.json" | ConvertFrom-Json
+  
   Set-Location $WorkFolder
   Remove-Item $TempFolder -Recurse -Force
+  
   return $ReturnList
 }

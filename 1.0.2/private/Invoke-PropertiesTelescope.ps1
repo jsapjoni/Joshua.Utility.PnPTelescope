@@ -27,6 +27,7 @@ function Invoke-PropertiesTelescope {
     "WorkFolder" = $SetCurrentWorkdir
     "HeaderText" = "Please one or more properties"
     "ListToPick" = $Properties
+    "Multi" = $true
   } ; $PickedItem = Invoke-FZFPickerService @FZFPickerServiceArgs
   
   return $PickedItem

@@ -1,4 +1,4 @@
-function Invoke-GetPNPSites {
+function Invoke-GetPNPSitesService {
   try 
   {
     $Sites = Get-PnPTenantSite -Detailed -IncludeOneDriveSites

@@ -8,7 +8,7 @@ function Invoke-SelectFZFPNPSite {
   Connect-PnPOnline -Url $SiteURL -Interactive
   
   #Initializer - var declare
-  $Sites = Invoke-GetPNPSites
+  $Sites = Invoke-GetPNPSitesService
   $SiteProperties = ($Sites[0] | Get-Member -MemberType Properties).Name
   $SitesList = [System.Collections.ArrayList]::new()
   $TempFolder = Invoke-RandTempFolderGeneration -GenerateTempFolder

@@ -7,20 +7,9 @@ function Invoke-ObjectTelescope {
     [Parameter()]
     [string[]]
     $SearchStrings
-    ,
-    [Parameter()]
-    [switch]
-    $InteractiveProperties
   )
   
   $Properties = ($Object | Get-Member -MemberType Properties).Name
-  
-  if (!($PSBoundParameters["InteractiveProperties"] -is [System.Object])) {
-    $Properties = $Object | Invoke-PropertiesTelescope
-    if ($Properties.Count -ge 4){
-      throw "Too many properties. Maximum 3 may be chosen"
-    }
-  } 
   
   $TempFolder = Invoke-RandTempFolderGeneration -GenerateTempFolder
   $SetCurrentWorkdir = $PWD
@@ -35,7 +24,8 @@ function Invoke-ObjectTelescope {
     "WorkFolder" = $SetCurrentWorkdir
     "HeaderText" = "Select object you want to take action"
     "ListToPick" = $Properties
-  }
+    "Multi" = $true
+  } ; $PickedItems = Invoke-FZFPickerService @FZFPickerServiceArgs
   
-  return Invoke-FZFPickerService @FZFPickerServiceArgs
+  return $PickedItems
 }
