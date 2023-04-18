@@ -4,7 +4,7 @@ function Invoke-FZFPickerService {
     [string]
     $TempFolder
     ,
-    [Parameter()]
+    [Parameter(Mandatory)]
     [string]
     $WorkFolder
     ,
