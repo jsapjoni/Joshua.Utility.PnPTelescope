@@ -11,6 +11,7 @@ function Invoke-FZFDisplayService {
   )
   
   $Properties = ($Object[0] | Get-Member -MemberType Properties).Name
+  
   if ($PSBoundParameters["SearchProperties"] -is [System.Object]) {
     $ValidProperties = foreach ($SearchProperty in $SearchProperties) {
       if ($SearchProperty -in $Properties) {
@@ -31,7 +32,8 @@ function Invoke-FZFDisplayService {
     $List = [System.Collections.ArrayList]::new()
     
     $FileName = foreach ($Vproperties in $ValidProperties) {
-      $ObjectItem.$Vproperties
+      $Filename = $ObjectItem.$Vproperties
+      $FileName.Replace("/", "-").Replace("\", "-")
     }
     
     $FileName = $FileName -join ""
