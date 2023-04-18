@@ -38,7 +38,7 @@ function Invoke-FZFDisplayService {
     $ItemURL = "$TempFolder\$($FileName)___.json"
     
     foreach ($Property in $Properties) {
-      [void] $List.Add(@{$Property = $ObjectItem.$Property}) | Out-Null
+      $List.Add(@{$Property = $ObjectItem.$Property}) | Out-Null
     }
     
     $DataHT.Add($FileName, $List)
