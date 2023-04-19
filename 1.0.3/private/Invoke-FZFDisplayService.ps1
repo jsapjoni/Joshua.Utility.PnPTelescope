@@ -8,6 +8,10 @@ function Invoke-FZFDisplayService {
     [Parameter()]
     [String[]]
     $SearchProperties
+    ,
+    [Parameter()]
+    [string[]]
+    $FilenameCharReplaceArgs
   )
   
   $Properties = ($Object[0] | Get-Member -MemberType Properties).Name
@@ -33,7 +37,7 @@ function Invoke-FZFDisplayService {
     
     $FileName = foreach ($Vproperties in $ValidProperties) {
       $Filename = $ObjectItem.$Vproperties
-      $FileName.Replace("/", "-").Replace("\", "-")
+      Invoke-StringReplacerService -String $FileName -Characters "-", "/", "\", ":"
     }
     
     $FileName = $FileName -join ""
