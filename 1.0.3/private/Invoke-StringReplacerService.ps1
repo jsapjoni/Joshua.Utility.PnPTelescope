@@ -13,7 +13,5 @@ function Invoke-StringReplacerService {
     $String = $String.Replace($chars,$Characters[0])
   }
   
-  $String = $String.Trim($Characters[0])
-  
   return $String
 }

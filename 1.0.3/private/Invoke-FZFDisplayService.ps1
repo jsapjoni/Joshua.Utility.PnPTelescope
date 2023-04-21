@@ -37,7 +37,7 @@ function Invoke-FZFDisplayService {
     
     $FileName = foreach ($Vproperties in $ValidProperties) {
       $Filename = $ObjectItem.$Vproperties
-      Invoke-StringReplacerService -String $FileName -Characters "-", "/", "\", ":"
+      Invoke-StringReplacerService -String $FileName -Characters $FilenameCharReplaceArgs
     }
     
     $FileName = $FileName -join ""
