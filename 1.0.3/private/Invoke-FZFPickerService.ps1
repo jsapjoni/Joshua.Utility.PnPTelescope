@@ -19,6 +19,10 @@ function Invoke-FZFPickerService {
     [Parameter()]
     [switch]
     $Multi
+    ,
+    [Parameter()]
+    [string]
+    $ReturnProperty
   )
   
   if ($PSBoundParameters["Multi"] -eq $true) {
@@ -38,6 +42,12 @@ function Invoke-FZFPickerService {
     "--preview-window", "70%",
     $MultiArgs
   )
+
+  #Get-Content -Path "$TempFolder\$($ReturnList)___.json"
+
+  if ($PSBoundParameters["ReturnProperty"] -is [System.Object]) {
+    $ReturnList = (Get-Content -Path "$TempFolder\$($ReturnList)___.json" | ConvertFrom-Json).$ReturnProperty
+  }
   
   Set-Location $WorkFolder
   Remove-Item $TempFolder -Recurse -Force
