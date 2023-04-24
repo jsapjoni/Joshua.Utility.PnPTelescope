@@ -13,6 +13,8 @@ function Select-PnPListFZF {
   $TempFolder = Invoke-RandTempFolderGeneration -GenerateTempFolder
   $DataHT = [hashtable]::New()
   
+  Write-Host $TempFolder -ForegroundColor Green 
+  
   foreach ($SiteList in $SiteLists) {
     $PropsHT = [hashtable]::new()
     $Filename = $SiteList.RootFolder.ServerRelativeUrl.Trim("{0}/{1}" -f $SiteList.RootFolder.ServerRelativeUrl.Split("/"))
@@ -37,7 +39,7 @@ function Select-PnPListFZF {
     })
     
     $DataHT.Add($Filename, $PropsHT)
-    $DataHT["$Filename"] | ConvertTo-Json >> $ItemURL
+    $DataHT["$Filename"] | ConvertTo-Json | jq . >> $ItemURL
     $PropsHT.Clear()
   }
 

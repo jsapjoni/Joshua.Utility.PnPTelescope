@@ -29,7 +29,7 @@ function Select-PnPSitesFZF {
     }
     
     $DataHT.Add($Filename, $PropsHT)
-    $DataHT["$Filename"] | ConvertTo-Json >> $ItemURL
+    $DataHT["$Filename"] | ConvertTo-Json | jq . >> $ItemURL
     $PropsHT.Clear()
   }
   
