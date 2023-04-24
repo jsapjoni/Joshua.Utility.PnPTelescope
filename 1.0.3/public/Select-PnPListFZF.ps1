@@ -5,15 +5,10 @@ function Select-PnPListFZF {
     $SiteURL
   )
   
-  if ($SiteURL -ne (Get-PnPContext).Url) {
-    $SiteURL = Select-PnPSitesFZF -SiteURL $SiteURL
-  }
-  
+  Invoke-PnPCheckSiteConnection -SiteURL $SiteURL
   $SiteLists = Get-PnPList -Includes Author, HasUniqueRoleAssignments, RoleAssignments
   $TempFolder = Invoke-RandTempFolderGeneration -GenerateTempFolder
   $DataHT = [hashtable]::New()
-  
-  Write-Host $TempFolder -ForegroundColor Green 
   
   foreach ($SiteList in $SiteLists) {
     $PropsHT = [hashtable]::new()
@@ -48,7 +43,7 @@ function Select-PnPListFZF {
     "WorkFolder" = $PWD
     "HeaderText" = "Please choose list from site"
     "ListToPick" = $DataHT.Keys
-    "ReturnProperty" = "ListPath"
+    "ReturnProperty" = "Title"
   }
   $SelectedItem = Invoke-FZFPickerService @FZFPickerServiceArgs
   return $SelectedItem

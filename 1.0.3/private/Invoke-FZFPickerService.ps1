@@ -43,8 +43,6 @@ function Invoke-FZFPickerService {
     $MultiArgs
   )
 
-  #Get-Content -Path "$TempFolder\$($ReturnList)___.json"
-
   if ($PSBoundParameters["ReturnProperty"] -is [System.Object]) {
     $ReturnList = (Get-Content -Path "$TempFolder\$($ReturnList)___.json" | ConvertFrom-Json).$ReturnProperty
   }
