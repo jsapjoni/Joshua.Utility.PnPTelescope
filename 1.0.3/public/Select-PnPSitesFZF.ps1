@@ -8,11 +8,10 @@ function Select-PnPSitesFZF {
   $Sites = Invoke-GetPNPSitesService
   $Properties = ($Sites | Get-Member -MemberType Properties).Name
   $TempFolder = Invoke-RandTempFolderGeneration -GenerateTempFolder
-  
   $DataHT = [hashtable]::new()
   
   foreach ($Site in $Sites) {
-    $List = [System.Collections.ArrayList]::new()
+    $PropsHT = [hashtable]::new()
     
     try {
       $Filename = "{3}/{4}" -f $Site.Url.Split("/")
@@ -26,13 +25,14 @@ function Select-PnPSitesFZF {
     $ItemURL = "$TempFolder\$($Filename)___.json"
     
     foreach ($Property in $Properties) {
-      $List.Add(@{ $Property = $Site.$Property }) | Out-Null
+      $PropsHT.Add($Property, $Site.$Property)
     }
     
-    $DataHT.Add($Filename, $List)
+    $DataHT.Add($Filename, $PropsHT)
     $DataHT["$Filename"] | ConvertTo-Json >> $ItemURL
+    $PropsHT.Clear()
   }
-
+  
   $FZFPickerServiceArgs = @{
     "TempFolder" = $TempFolder
     "WorkFolder" = $PWD
@@ -40,6 +40,7 @@ function Select-PnPSitesFZF {
     "ListToPick" = $DataHT.Keys
     "ReturnProperty" = "Url"
   }
+  
   $SelectedItem = Invoke-FZFPickerService @FZFPickerServiceArgs
   return $SelectedItem
 }

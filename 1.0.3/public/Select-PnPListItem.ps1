@@ -9,9 +9,7 @@ function Select-PnPListItem {
     $List
   )
   
-  if ($SiteURL -ne (Get-PnPContext).Url) {
-    $SiteURL = Select-PnPSitesFZF -SiteURL $SiteURL
-  }
+  Invoke-PnPCheckSiteConnection -SiteURL $SiteURL
   
   if ($PSBoundParameters["List"] -isnot [System.Object]) {
     $PickedList = Select-PnPListFZF -SiteURL $SiteURL

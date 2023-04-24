@@ -14,30 +14,31 @@ function Select-PnPListFZF {
   $DataHT = [hashtable]::New()
   
   foreach ($SiteList in $SiteLists) {
-    $ListContents = [System.Collections.ArrayList]::new()
+    $PropsHT = [hashtable]::new()
     $Filename = $SiteList.RootFolder.ServerRelativeUrl.Trim("{0}/{1}" -f $SiteList.RootFolder.ServerRelativeUrl.Split("/"))
     $Filename = $Filename.Replace("/", "-").Replace("\", "-").Replace(":", "-")
     $ItemURL = "$TempFolder\$($Filename)___.json"
     
     
-    $ListContents.Add( @{"Title" = $SiteList.Title} ) | Out-Null
+    $PropsHT.Add("Title", $SiteList.Title)
     
-    $ListContents.Add( @{"Author" = @{ 
+    $PropsHT.Add("Author",@{ 
       "ListAuthor" = $SiteList.Author.Title
       "LoginName" = $SiteList.Author.LoginName
       "Email" = $SiteList.Author.Email 
-    }}) | Out-Null
+    })
     
-    $ListContents.Add( @{"ListPath" = $SiteList.RootFolder.ServerRelativeUrl} ) | Out-Null
+    $PropsHT.Add("ListPath", $SiteList.RootFolder.ServerRelativeUrl)
     
-    $ListContents.Add( @{"ItemCount" = $SiteList.ItemCount} ) | Out-Null
+    $PropsHT.Add("ItemCount", $SiteList.ItemCount)
     
-    $ListContents.Add( @{"Permissions" = @{
+    $PropsHT.Add("Permissions", @{
       "HasUniqueRoleAssignments" = $SiteList.HasUniqueRoleAssignments
-    }}) | Out-Null
+    })
     
-    $DataHT.Add($Filename, $ListContents)
+    $DataHT.Add($Filename, $PropsHT)
     $DataHT["$Filename"] | ConvertTo-Json >> $ItemURL
+    $PropsHT.Clear()
   }
 
   $FZFPickerServiceArgs = @{
