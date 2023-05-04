@@ -16,5 +16,4 @@ function Invoke-PNPCheckSiteConnection {
     $SiteURL = Select-PnPSitesFZF -SiteURL $SiteURL
     Connect-PnPOnline -Url $SiteUrl -Interactive
   }
-  return $SiteUrl
 }

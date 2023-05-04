@@ -15,8 +15,8 @@ function Select-PnPListItem {
     $List = Select-PnPListFZF -SiteURL $SiteURL
     Write-Host $List -ForegroundColor Green
   }
-
-  $ListItems = Get-PnPListItem -List $List
+  
+  $ListItems = Get-PnPListItem -List $List -PageSize 1000
   $TempFolder = Invoke-RandTempFolderGeneration -GenerateTempFolder
   $DataHT = [hashtable]::new()
   
@@ -28,7 +28,7 @@ function Select-PnPListItem {
   
     $PropsHT.Add("FieldValues", $ListItem.FieldValues)
     $DataHT.Add($FileName, $PropsHT)
-    $DataHT["$FileName"] | ConvertTo-Json | jq . >> $ItemURL
+    $DataHT["$FileName"] | ConvertTo-Json | Out-File -FilePath $ItemURL -Encoding utf8NoBOM
     $PropsHT.Clear()
   }
   

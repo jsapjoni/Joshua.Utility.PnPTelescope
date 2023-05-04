@@ -12,29 +12,25 @@ function Select-PnPListFZF {
   
   foreach ($SiteList in $SiteLists) {
     $PropsHT = [hashtable]::new()
-    $Filename = $SiteList.RootFolder.ServerRelativeUrl.Trim("{0}/{1}" -f $SiteList.RootFolder.ServerRelativeUrl.Split("/"))
+    $Filename = $SiteList.RootFolder.ServerRelativeUrl.TrimStart("{0}/{1}/{2}" -f $SiteList.RootFolder.ServerRelativeUrl.Split("/"))
     $Filename = $Filename.Replace("/", "-").Replace("\", "-").Replace(":", "-")
     $ItemURL = "$TempFolder\$($Filename)___.json"
     
     
     $PropsHT.Add("Title", $SiteList.Title)
-    
     $PropsHT.Add("Author",@{ 
       "ListAuthor" = $SiteList.Author.Title
       "LoginName" = $SiteList.Author.LoginName
       "Email" = $SiteList.Author.Email 
     })
-    
     $PropsHT.Add("ListPath", $SiteList.RootFolder.ServerRelativeUrl)
-    
     $PropsHT.Add("ItemCount", $SiteList.ItemCount)
-    
     $PropsHT.Add("Permissions", @{
       "HasUniqueRoleAssignments" = $SiteList.HasUniqueRoleAssignments
     })
     
     $DataHT.Add($Filename, $PropsHT)
-    $DataHT["$Filename"] | ConvertTo-Json | jq . >> $ItemURL
+    $DataHT["$Filename"] | ConvertTo-Json | Out-File -FilePath $ItemURL -Encoding utf8NoBOM
     $PropsHT.Clear()
   }
 
