@@ -23,7 +23,8 @@ function Select-PnPListItem {
   foreach ($ListItem in $ListItems) {
     $PropsHT = [hashtable]::new()
     $FileName = $ListItem.FieldValues["FileRef"]
-    $FileName = $FileName.Replace("/", "").Replace("\", "-").Replace(":", "-")
+    $FileName = $FileName.Trim("{0}/{1}/" -f $FileName.Split("/"))
+    $FileName = $FileName.Replace("/", "-").Replace("\", "-").Replace(":", "-")
     $ItemURL = "$TempFolder\$($Filename)___.json"
   
     $PropsHT.Add("FieldValues", $ListItem.FieldValues)
